@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+     "jsx": "react-jsx",
+    "baseUrl": "./src",
+    "paths": {
+      "@assets/*": ["assets/*"],
+      "@components/*": ["components/*"],
+      "@contexts/*": ["contexts/*"],
+      "@configs/*": ["configs/*"],
+      "@pages/*": ["pages/*"],
+      "@utils/*": ["utils/*"],
+      "@hooks/*": ["hooks/*"]
+    },
+    "types": ["vite/client", "node"],
+  },
+  "include": ["src"],
+ 
+}

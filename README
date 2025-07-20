@@ -1,0 +1,45 @@
+# simology
+
+A website allows users to create unique customizable sims family tree.
+
+## Setup Backend
+
+```bash
+$ mkdir simology/backend && cd $_
+$ python3 -m venv venv
+$ source venv/bin/activate
+$ pip install fastapi uvicorn
+$ nano .env
+```
+
+## Setup Frontend
+
+```bash
+$ cd simology
+$ yarn create vite
+$ ✔ Project name: … frontend
+$ ✔ Select a framework: › React
+$ ✔ Select a variant: › JavaScript
+$ cd vite-react-project
+$ yarn install
+$ yarn run dev
+```
+
+## Demo
+
+Let's check out [Simology](https://bunnyexpert.netlify.app/) website!
+
+## Build with
+
+- HTML
+- CSS
+- Sass
+- TailwindCSS
+- Ant Design
+- React + TypeScript
+- React Router
+- React Flow
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
