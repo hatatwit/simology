@@ -7,6 +7,8 @@ import {
   type Node,
 } from "@xyflow/react";
 import { getLayoutedElements } from "@utils/index";
+import { relationship } from "@configs/appData";
+import { FormValues } from "@components/SettingsDrawer";
 
 export default function useFlowCanvas() {
   const { fitView } = useReactFlow();
@@ -74,7 +76,8 @@ export default function useFlowCanvas() {
   }, []);
 
   const handleDrawerSubmit = useCallback(
-    (formValues: object) => {
+    (formValues: FormValues) => {
+      // Update node data
       setNodes((nds) =>
         nds.map((n) =>
           n.id === selectedNode?.id
@@ -82,6 +85,18 @@ export default function useFlowCanvas() {
             : n
         )
       );
+
+      // Update and draw edges
+      const newEdges = formValues.relationships.map((rel) => ({
+        id: crypto.randomUUID(),
+        source: selectedNode.id,
+        target: rel.sim,
+        type: "custom",
+        label: relationship.find((r) => r.value === rel.relationship)?.label,
+        data: { relationship: rel.relationship },
+      }));
+      setEdges((prevVal) => [...prevVal, ...newEdges]);
+
       setSelectedNode(null);
     },
     [selectedNode, setNodes]

@@ -1,7 +1,8 @@
+import { relationship } from "@configs/appData";
 import {
   BaseEdge,
   EdgeLabelRenderer,
-  getBezierPath,
+  getSmoothStepPath,
   useReactFlow,
   type EdgeProps,
 } from "@xyflow/react";
@@ -19,8 +20,10 @@ export default function CustomEdge({
   selected,
   style = {},
   markerEnd,
+  data,
+  label,
 }: EdgeProps) {
-  const [edgePath, labelX, labelY] = getBezierPath({
+  const [edgePath, labelX, labelY] = getSmoothStepPath({
     sourceX,
     sourceY,
     sourcePosition,
@@ -37,27 +40,29 @@ export default function CustomEdge({
   return (
     <>
       <BaseEdge path={edgePath} markerEnd={markerEnd} style={style} />
-      {selected && (
-        <EdgeLabelRenderer>
-          <div
-            className="nodrag nopan"
-            data-testid="custom-edge"
-            style={{
-              position: "absolute",
-              transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
-              pointerEvents: "all",
-              zIndex: 10,
-            }}
-          >
+      <EdgeLabelRenderer>
+        <div
+          className="nodrag nopan"
+          data-testid="custom-edge"
+          style={{
+            position: "absolute",
+            transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
+            pointerEvents: "all",
+            zIndex: 10,
+          }}
+        >
+          {label ||
+            relationship.find((r) => r.value === data?.relationship)?.label}
+          {selected && (
             <Button
               shape="circle"
               size="small"
               icon={<AiOutlineClose />}
               onClick={onEdgeClick}
             />
-          </div>
-        </EdgeLabelRenderer>
-      )}
+          )}
+        </div>
+      </EdgeLabelRenderer>
     </>
   );
 }

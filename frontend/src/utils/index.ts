@@ -37,3 +37,12 @@ export const renderEnumOption = (obj, formatLabel?) => {
       value,
     }));
 };
+
+export const renderSimNodeOption = (array) => {
+  return array
+    .filter((item) => !!item?.data)
+    .map((item) => ({
+      label: `${item.data.firstName} ${item.data.lastName}`,
+      value: item.id,
+    }));
+};

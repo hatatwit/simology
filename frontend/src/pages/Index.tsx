@@ -37,6 +37,8 @@ const FlowCanvas = ({ isDarkMode }) => {
     isOpen,
   } = useFlowCanvas();
 
+  console.log("nodes: ", nodes);
+
   return (
     <main className="h-full w-full">
       <ReactFlow
@@ -52,6 +54,7 @@ const FlowCanvas = ({ isDarkMode }) => {
         onEdgeClick={(_, edge) => setSelectedEdge(edge)}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
+        defaultEdgeOptions={{ type: "smoothstep" }}
         colorMode={isDarkMode ? "dark" : "light"}
       >
         <Controls />

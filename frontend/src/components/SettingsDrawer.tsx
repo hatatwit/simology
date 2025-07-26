@@ -1,9 +1,10 @@
 import { CONDITION, GENDER, OCCULT } from "@configs/appData";
 import { Button, Collapse, type CollapseProps, Drawer, Typography } from "antd";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { AiOutlinePlus } from "react-icons/ai";
+import { useMemo, useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
 import InformationForm from "./InformationForm";
+import RelationshipForm from "./RelationshipForm";
+import { AiOutlinePlus } from "react-icons/ai";
 
 export interface FormValues {
   avatar: string;
@@ -13,6 +14,7 @@ export interface FormValues {
   gender: GENDER;
   condition: CONDITION;
   occult: OCCULT;
+  relationships: { sim?: string; relationship?: number }[];
 }
 
 interface Props {
@@ -22,74 +24,62 @@ interface Props {
   onSubmit: (formValues: FormValues) => void;
 }
 
-const genExtra = () => (
-  <AiOutlinePlus
-    style={{ height: 22 }}
-    onClick={(event) => {
-      event.stopPropagation();
-    }}
-  />
-);
-
 const SettingsFormDrawer = ({
   open,
   onClose,
   initialData,
   onSubmit,
 }: Props) => {
+  const [activeKey, setActiveKey] = useState<string[]>(["1"]);
+
   const { control, handleSubmit, reset } = useForm<FormValues>({
     mode: "onChange",
     defaultValues: initialData,
   });
-  const [activeKey, setActiveKey] = useState<string | string[]>("1");
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "relationships",
+  });
 
-  const items: CollapseProps["items"] = [
-    {
-      key: "1",
-      label: <Typography.Title level={5}>Information</Typography.Title>,
-      children: <InformationForm control={control} />,
-    },
-    {
-      key: "2",
-      label: <Typography.Title level={5}>Parents</Typography.Title>,
-      children: <div>Test</div>,
-      extra: genExtra(),
-    },
-    {
-      key: "3",
-      label: <Typography.Title level={5}>Friends</Typography.Title>,
-      children: <div>Test</div>,
-      extra: genExtra(),
-    },
-    {
-      key: "4",
-      label: <Typography.Title level={5}>Pets</Typography.Title>,
-      children: <div>Test</div>,
-      extra: genExtra(),
-    },
-  ];
+  const items: CollapseProps["items"] = useMemo(
+    () => [
+      {
+        key: "1",
+        label: <Typography.Title level={5}>Information</Typography.Title>,
+        children: <InformationForm control={control} />,
+      },
+      {
+        key: "2",
+        label: <Typography.Title level={5}>Relationships</Typography.Title>,
+        children: (
+          <RelationshipForm control={control} fields={fields} remove={remove} />
+        ),
+        extra: (
+          <AiOutlinePlus
+            style={{ height: 22 }}
+            onClick={(event) => {
+              event.stopPropagation();
+              append({});
+              setActiveKey((prev) =>
+                prev.includes("2") ? prev : [...prev, "2"]
+              );
+            }}
+          />
+        ),
+      },
+    ],
+    [control, fields, remove, append]
+  );
 
-  const onChange = (key: string | string[]) => {
+  const onChange = (key: string[]) => {
     setActiveKey(key);
   };
 
   const handleFormSubmit = (values: FormValues) => {
     onSubmit(values);
     onClose();
+    reset();
   };
-
-  useEffect(() => {
-    if (open) {
-      reset({
-        avatar: "",
-        firstName: "",
-        lastName: "",
-        skills: [],
-        gender: undefined,
-        ...initialData,
-      });
-    }
-  }, [initialData, open, reset]);
 
   return (
     <Drawer
