@@ -38,6 +38,7 @@ const FlowCanvas = ({ isDarkMode }) => {
   } = useFlowCanvas();
 
   console.log("nodes: ", nodes);
+  console.log("edges: ", edges);
 
   return (
     <main className="h-full w-full">
@@ -80,6 +81,7 @@ const FlowCanvas = ({ isDarkMode }) => {
       </ReactFlow>
 
       <SettingsFormDrawer
+        key={selectedNode?.id}
         open={isOpen}
         initialData={selectedNode?.data as unknown as FormValues}
         onClose={handleCloseDrawer}

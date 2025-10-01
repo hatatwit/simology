@@ -16,6 +16,7 @@
     "@xyflow/react": "^12.8.2",
     "antd": "^5.26.5",
     "axios": "^1.10.0",
+    "entitree-flex": "^0.4.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.60.0",

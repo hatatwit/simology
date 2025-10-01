@@ -1463,6 +1463,11 @@ enhanced-resolve@^5.18.1:
     graceful-fs "^4.2.4"
     tapable "^2.2.0"
 
+entitree-flex@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/entitree-flex/-/entitree-flex-0.4.1.tgz#5d3e43fc0e8cd400a39b945c8a131605f823a07e"
+  integrity sha512-KWy1sSNw/DQ4ujNJY4nQsP2JsHznn7rBZsUKI+ylN2RC6bfr/qO2G1ZmAlrMYxwYy2Azr21FHc/tRrvn3kFg/Q==
+
 es-define-property@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/es-define-property/-/es-define-property-1.0.1.tgz#983eb2f9a6724e9303f61addf011c72e09e0b0fa"

@@ -71,35 +71,91 @@ export default function useFlowCanvas() {
   );
 
   const onNodeDoubleClick = useCallback((_: React.MouseEvent, node: Node) => {
+    console.log(node);
     setIsOpen(true);
     setSelectedNode(node);
   }, []);
 
   const handleDrawerSubmit = useCallback(
     (formValues: FormValues) => {
-      // Update node data
+      // 1. Update nodes (relationships only)
       setNodes((nds) =>
-        nds.map((n) =>
-          n.id === selectedNode?.id
-            ? { ...n, data: { ...n.data, ...formValues } }
-            : n
-        )
+        nds.map((n) => {
+          if (n.id === selectedNode?.id) {
+            return {
+              ...n,
+              data: { ...n.data, ...formValues },
+            };
+          }
+
+          const rel = formValues.relationships?.find((r) => r.sim === n.id);
+          if (rel) {
+            const relConfig = relationship.find(
+              (r) => r.value === rel.relationship
+            );
+
+            const inverse =
+              relConfig?.relationships?.target === rel.relationship
+                ? relConfig?.relationships?.source
+                : relConfig?.relationships?.target;
+
+            // avoid pushing duplicate relationships
+            const already = n.data?.relationships?.some(
+              (r) => r.sim === selectedNode.id && r.relationship === inverse
+            );
+
+            if (!already) {
+              return {
+                ...n,
+                data: {
+                  ...n.data,
+                  relationships: [
+                    ...(n.data?.relationships || []),
+                    {
+                      sim: selectedNode.id,
+                      relationship: inverse,
+                    },
+                  ],
+                },
+              };
+            }
+          }
+
+          return n;
+        })
       );
 
-      // Update and draw edges
-      const newEdges = formValues.relationships.map((rel) => ({
-        id: crypto.randomUUID(),
-        source: selectedNode.id,
-        target: rel.sim,
-        type: "custom",
-        label: relationship.find((r) => r.value === rel.relationship)?.label,
-        data: { relationship: rel.relationship },
-      }));
-      setEdges((prevVal) => [...prevVal, ...newEdges]);
+      // 2. Update edges safely (no duplicates)
+      setEdges((prevEdges) => {
+        const newEdges = formValues.relationships
+          .filter(
+            (rel) =>
+              !prevEdges.some(
+                (pe) =>
+                  (pe.source === selectedNode.id &&
+                    pe.target === rel.sim &&
+                    pe.data?.relationship === rel.relationship) ||
+                  (pe.source === rel.sim &&
+                    pe.target === selectedNode.id &&
+                    pe.data?.relationship === rel.relationship)
+              )
+          )
+          .map((rel) => ({
+            id: crypto.randomUUID(),
+            source: selectedNode.id,
+            target: rel.sim,
+            type: "custom",
+            label: relationship.find((r) => r.value === rel.relationship)
+              ?.label,
+            data: { relationship: rel.relationship },
+          }));
+
+        return [...prevEdges, ...newEdges];
+      });
 
       setSelectedNode(null);
     },
-    [selectedNode, setNodes]
+    [selectedNode, setNodes, setEdges]
   );
 
   const handleCloseDrawer = useCallback(() => {

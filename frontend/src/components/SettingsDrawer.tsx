@@ -30,7 +30,9 @@ const SettingsFormDrawer = ({
   initialData,
   onSubmit,
 }: Props) => {
-  const [activeKey, setActiveKey] = useState<string[]>(["1"]);
+  const [activeKey, setActiveKey] = useState<string[]>(
+    initialData?.relationships?.length ? ["1", "2"] : ["1"]
+  );
 
   const { control, handleSubmit, reset } = useForm<FormValues>({
     mode: "onChange",

@@ -1,18 +1,46 @@
-import { Handle, Position } from "@xyflow/react";
+import { Handle, Position, useStore } from "@xyflow/react";
 import { Avatar, Typography } from "antd";
 import { AiOutlineUser } from "react-icons/ai";
 
-const SimNode = ({ data }) => {
+const SimNode = ({ id, data }) => {
+  // Access edges from React Flow store
+  const edges = useStore((state) => state.edges);
+
+  // Count existing edges for this node
+  const targetEdges = edges.filter((e) => e.target === id);
+  const sourceEdges = edges.filter((e) => e.source === id);
+
+  // Validation: allow only one target and one source
+  const canConnectTarget = () => targetEdges.length < 1;
+  const canConnectSource = () => sourceEdges.length < 1;
+
   return (
     <div className="custom-node">
-      <Handle type="target" position={Position.Bottom} id="target-bottom" />
-      <Handle type="target" position={Position.Right} id="target-right" />
+      {/* Avatar + Name */}
       <Avatar size={48} icon={<AiOutlineUser />} src={data?.avatar} />
       <Typography.Paragraph className="text-center">
-        {data ? `${data?.firstName + " " + data?.lastName}` : "Name"}
+        {data ? `${data?.firstName ?? ""} ${data?.lastName ?? ""}` : "Name"}
       </Typography.Paragraph>
-      <Handle type="source" position={Position.Top} id="source-top" />
-      <Handle type="source" position={Position.Left} id="source-left" />
+
+      {/* Floating target (anywhere on node) */}
+      <Handle
+        type="target"
+        position={Position.Left}
+        id="target"
+        isConnectable
+        isValidConnection={canConnectTarget}
+        style={{ visibility: "hidden" }} // hide but still usable
+      />
+
+      {/* Floating source (anywhere on node) */}
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="source"
+        isConnectable
+        isValidConnection={canConnectSource}
+        style={{ visibility: "hidden" }} // hide but still usable
+      />
     </div>
   );
 };
