@@ -125,34 +125,6 @@ export default function useFlowCanvas() {
         })
       );
 
-      // 2. Update edges safely (no duplicates)
-      setEdges((prevEdges) => {
-        const newEdges = formValues.relationships
-          .filter(
-            (rel) =>
-              !prevEdges.some(
-                (pe) =>
-                  (pe.source === selectedNode.id &&
-                    pe.target === rel.sim &&
-                    pe.data?.relationship === rel.relationship) ||
-                  (pe.source === rel.sim &&
-                    pe.target === selectedNode.id &&
-                    pe.data?.relationship === rel.relationship)
-              )
-          )
-          .map((rel) => ({
-            id: crypto.randomUUID(),
-            source: selectedNode.id,
-            target: rel.sim,
-            type: "custom",
-            label: relationship.find((r) => r.value === rel.relationship)
-              ?.label,
-            data: { relationship: rel.relationship },
-          }));
-
-        return [...prevEdges, ...newEdges];
-      });
-
       setSelectedNode(null);
     },
     [selectedNode, setNodes, setEdges]

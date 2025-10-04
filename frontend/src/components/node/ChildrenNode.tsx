@@ -1,28 +1,10 @@
 import { Handle, Position } from "@xyflow/react";
-import { Avatar, Typography } from "antd";
-import { AiOutlineUser } from "react-icons/ai";
 import { Fragment } from "react/jsx-runtime";
 
-const SimNode = ({ data }) => {
+const ChildrenNode = () => {
   return (
     <Fragment>
-      <Avatar size={48} icon={<AiOutlineUser />} src={data?.avatar} />
-      <Typography.Paragraph>
-        {data ? `${data.firstName ?? ""} ${data.lastName ?? ""}` : "Name"}
-      </Typography.Paragraph>
-      {/* Top handles */}
-      <Handle
-        type="source"
-        position={Position.Top}
-        id="top-source"
-        className="handle"
-      />
-      <Handle
-        type="target"
-        position={Position.Top}
-        id="top-target"
-        className="handle"
-      />
+      🐣
       {/* Bottom handles */}
       <Handle
         type="source"
@@ -66,4 +48,4 @@ const SimNode = ({ data }) => {
   );
 };
 
-export default SimNode;
+export default ChildrenNode;

@@ -1,4 +1,5 @@
 import { useTheme } from "@contexts/ThemeContext";
+import type { MenuProps } from "antd";
 import {
   Button,
   Dropdown,
@@ -9,18 +10,19 @@ import {
   Switch,
   theme,
   Typography,
+  Upload,
 } from "antd";
-import type { MenuProps } from "antd";
 import { useState } from "react";
 import {
-  AiOutlineUpload,
-  AiOutlineDownload,
+  AiFillCaretDown,
   AiOutlineDoubleLeft,
   AiOutlineDoubleRight,
-  AiFillCaretDown,
+  AiOutlineDownload,
+  AiOutlineUpload,
   AiOutlineUser,
 } from "react-icons/ai";
-import { MdPets } from "react-icons/md";
+import { MdClose, MdEgg, MdImage, MdRingVolume } from "react-icons/md";
+import { PiNetwork } from "react-icons/pi";
 
 import { Link, Outlet } from "react-router-dom";
 
@@ -38,6 +40,8 @@ const { Header, Sider, Content, Footer } = Layout;
 const AppLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const { isDarkMode, toggleTheme } = useTheme();
+  const [bgImage, setBgImage] = useState(null);
+  const [fileInfo, setFileInfo] = useState(null);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -89,6 +93,7 @@ const AppLayout = () => {
           theme="light"
           mode="inline"
           defaultSelectedKeys={["1"]}
+          inlineCollapsed={collapsed}
           items={[
             {
               key: "1",
@@ -105,16 +110,36 @@ const AppLayout = () => {
             },
             {
               key: "2",
-              icon: (
-                <div
-                  onDragStart={(e) => onDragStart(e, "pet")}
-                  draggable
-                  className="cursor-move"
-                >
-                  <MdPets />
-                </div>
-              ),
-              label: "Pet",
+              icon: <PiNetwork />,
+              label: "Relationships",
+              children: [
+                {
+                  key: "3",
+                  icon: (
+                    <div
+                      onDragStart={(e) => onDragStart(e, "children")}
+                      draggable
+                      className="cursor-move"
+                    >
+                      <MdEgg />
+                    </div>
+                  ),
+                  label: "Children",
+                },
+                {
+                  key: "4",
+                  icon: (
+                    <div
+                      onDragStart={(e) => onDragStart(e, "spouse")}
+                      draggable
+                      className="cursor-move"
+                    >
+                      <MdRingVolume />
+                    </div>
+                  ),
+                  label: "Spouse",
+                },
+              ],
             },
           ]}
         />
@@ -146,6 +171,53 @@ const AppLayout = () => {
               gap: 8,
             }}
           >
+            {fileInfo && bgImage && (
+              <div className="flex align-items-center gap-6">
+                <Typography.Text>{fileInfo.name}</Typography.Text>
+                <Button
+                  type="text"
+                  size="small"
+                  danger
+                  onClick={() => {
+                    setBgImage(null);
+                    setFileInfo(null);
+                  }}
+                >
+                  <MdClose />
+                </Button>
+              </div>
+            )}
+            <Upload
+              accept="image/png,image/jpeg"
+              maxCount={1}
+              showUploadList={false}
+              beforeUpload={(file) => {
+                const isImage =
+                  file.type === "image/png" || file.type === "image/jpeg";
+                if (!isImage) {
+                  message.error(`${file.name} is not a png or jpeg file`);
+                  return Upload.LIST_IGNORE;
+                }
+
+                // Convert file to Base64 URL
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                  setBgImage(e.target?.result as string);
+                  setFileInfo({ name: file.name });
+                };
+                reader.readAsDataURL(file);
+
+                return false; // prevent upload
+              }}
+              onRemove={() => {
+                setBgImage(null);
+                setFileInfo(null);
+              }}
+              listType="text"
+            >
+              <Button icon={<MdImage />} />
+            </Upload>
+
             <Button>
               <AiOutlineUpload />
             </Button>
@@ -171,8 +243,10 @@ const AppLayout = () => {
             margin: "24px 16px",
             padding: 24,
             minHeight: 280,
-            background: colorBgContainer,
             borderRadius: borderRadiusLG,
+            background: bgImage
+              ? `url(${bgImage}) center/cover no-repeat`
+              : colorBgContainer,
           }}
         >
           <Outlet />

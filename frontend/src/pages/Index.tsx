@@ -32,7 +32,6 @@ const FlowCanvas = ({ isDarkMode }) => {
     handleCloseDrawer,
     layoutDirection,
     selectedNode,
-    // selectedEdge,
     setSelectedEdge,
     isOpen,
   } = useFlowCanvas();

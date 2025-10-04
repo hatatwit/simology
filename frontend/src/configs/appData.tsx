@@ -1,15 +1,15 @@
 import CustomEdge from "@components/edge/CustomEdge";
-import EggNode from "@components/node/EggNode";
-import PetNode from "@components/node/PetNode";
+import ChildrenNode from "@components/node/ChildrenNode";
 import SimNode from "@components/node/SimNode";
+import SpouseNode from "@components/node/SpouseNode";
 import { FaChild, FaHeartBroken, FaUsers, FaUserTie } from "react-icons/fa";
 
 import { GiLovers } from "react-icons/gi";
 
 export const nodeTypes = {
   sim: SimNode,
-  pet: PetNode,
-  egg: EggNode,
+  children: ChildrenNode,
+  spouse: SpouseNode,
 };
 
 export const edgeTypes = {
